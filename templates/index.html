@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sensor Data</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Real-time Sensor Data</h1>
+    <div id="sensor-value"></div>
+    <div id="graph"></div>
+
+    <script>
+        function fetchSensorData() {
+            $.get('/sensor_data', function(data) {
+                $('#sensor-value').text('Sensor Value: ' + data.value);
+                fetchSensorData(); // Fetch data again after a short delay
+            });
+        }
+
+        // Function to plot the graph
+        function plotGraph() {
+            $.get('/plot', function(data) {
+                Plotly.newPlot('graph', data);
+                setTimeout(plotGraph, 3000); // Refresh graph every 3 seconds
+            });
+        }
+
+        // Start fetching sensor data and plotting the graph when the page loads
+        $(document).ready(function() {
+            fetchSensorData();
+            plotGraph();
+        });
+    </script>
+</body>
+</html>
